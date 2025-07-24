@@ -93,7 +93,7 @@
                         "name": "[variables('probeName')]",
                         "properties": {
                             "protocol": "Tcp",
-                            "port": 80
+                            "port": 3389
                         }
                     }
                 ],
@@ -108,8 +108,8 @@
                                 "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('lbName'), variables('backendPool'))]"
                             },
                             "protocol": "Tcp",
-                            "frontendPort": 80,
-                            "backendPort": 80,
+                            "frontendPort": 3389,
+                            "backendPort": 3389,
                             "enableFloatingIP": false,
                             "idleTimeoutInMinutes": 5,
                             "probe": {
