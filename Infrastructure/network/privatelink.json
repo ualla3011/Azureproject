@@ -1,0 +1,253 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "locationEastUS": {
+      "type": "string",
+      "defaultValue": "eastus"
+    },
+    "locationEastUS2": {
+      "type": "string",
+      "defaultValue": "eastus2"
+    },
+    "eastUSVnetName": {
+      "type": "string"
+    },
+    "eastUSSubnetName": {
+      "type": "string"
+    },
+    "eastUS2VnetName": {
+      "type": "string"
+    },
+    "eastUS2SubnetName": {
+      "type": "string"
+    },
+    "storageAccountEastUS": {
+      "type": "string"
+    },
+    "storageAccountEastUS2": {
+      "type": "string"
+    },
+    "privateEndpointEastUSName": {
+      "type": "string"
+    },
+    "privateEndpointEastUS2Name": {
+      "type": "string"
+    },
+    "nsgEastUSName": {
+      "type": "string"
+    },
+    "nsgEastUS2Name": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2021-05-01",
+      "name": "[parameters('privateEndpointEastUSName')]",
+      "location": "[parameters('locationEastUS')]",
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('eastUSVnetName'), parameters('eastUSSubnetName'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[concat(parameters('privateEndpointEastUSName'), '-plsconn')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountEastUS2'))]",
+              "groupIds": ["file"],
+              "requestMessage": "Connection from EastUS VNet to EastUS2 Storage Account"
+            }
+          }
+        ],
+        "privateDnsZoneGroups": [
+          {
+            "name": "default",
+            "properties": {
+              "privateDnsZoneConfigs": [
+                {
+                  "name": "filedns",
+                  "properties": {
+                    "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.file.core.windows.net')]"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2021-05-01",
+      "name": "[parameters('privateEndpointEastUS2Name')]",
+      "location": "[parameters('locationEastUS2')]",
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('eastUS2VnetName'), parameters('eastUS2SubnetName'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[concat(parameters('privateEndpointEastUS2Name'), '-plsconn')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountEastUS'))]",
+              "groupIds": ["file"],
+              "requestMessage": "Connection from EastUS2 VNet to EastUS Storage Account"
+            }
+          }
+        ],
+        "privateDnsZoneGroups": [
+          {
+            "name": "default",
+            "properties": {
+              "privateDnsZoneConfigs": [
+                {
+                  "name": "filedns",
+                  "properties": {
+                    "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.file.core.windows.net')]"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2020-06-01",
+      "name": "privatelink.file.core.windows.net",
+      "location": "global",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('privatelink.file.core.windows.net/', parameters('eastUSVnetName'), '-link')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.file.core.windows.net')]"
+      ],
+      "properties": {
+        "virtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('eastUSVnetName'))]"
+        },
+        "registrationEnabled": false
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('privatelink.file.core.windows.net/', parameters('eastUS2VnetName'), '-link')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.file.core.windows.net')]"
+      ],
+      "properties": {
+        "virtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('eastUS2VnetName'))]"
+        },
+        "registrationEnabled": false
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2020-11-01",
+      "name": "[parameters('nsgEastUSName')]",
+      "location": "[parameters('locationEastUS')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "Allow-RDP-Trusted",
+            "properties": {
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "10.0.2.0/24",
+              "destinationAddressPrefix": "*",
+              "description": "Allow RDP from trusted subnet"
+            }
+          },
+          {
+            "name": "Deny-All-Inbound",
+            "properties": {
+              "priority": 4096,
+              "direction": "Inbound",
+              "access": "Deny",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "description": "Deny all other inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2020-11-01",
+      "name": "[parameters('nsgEastUS2Name')]",
+      "location": "[parameters('locationEastUS2')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "Allow-RDP-Trusted",
+            "properties": {
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "10.0.1.0/24",
+              "destinationAddressPrefix": "*",
+              "description": "Allow RDP from trusted subnet"
+            }
+          },
+          {
+            "name": "Deny-All-Inbound",
+            "properties": {
+              "priority": 4096,
+              "direction": "Inbound",
+              "access": "Deny",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "description": "Deny all other inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2021-02-01",
+      "name": "[concat(parameters('eastUSVnetName'), '/', parameters('eastUSSubnetName'))]",
+      "properties": {
+        "addressPrefix": "10.0.1.0/24",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgEastUSName'))]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2021-02-01",
+      "name": "[concat(parameters('eastUS2VnetName'), '/', parameters('eastUS2SubnetName'))]",
+      "properties": {
+        "addressPrefix": "10.1.1.0/24",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgEastUS2Name'))]"
+        }
+      }
+    }
+  ]
+}
