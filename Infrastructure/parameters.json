@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "locationEastUS": {
+      "value": "eastus"
+    },
+    "locationEastUS2": {
+      "value": "eastus2"
+    },
+    "vnetEastUS": {
+      "value": "EastUS-VNet"
+    },
+    "vnetEastUS2": {
+      "value": "EastUS2-VNet"
+    },
+    "availabilitySetName": {
+      "value": "MyAS"
+    },
+    "vmName1": {
+      "value": "w1"
+    },
+    "vmName2": {
+      "value": "w2"
+    },
+    "vmName3": {
+      "value": "WS11"
+    },
+    "adminUsername": {
+      "value": "azureuser"
+    },
+    "adminPassword": {
+      "value": "Welcome123!"
+    },
+    "firewallName": {
+      "value": "myAzureFirewall"
+    },
+    "firewallSubnetName": {
+      "value": "AzureFirewallSubnet"
+    },
+    "publicIpName": {
+      "value": "firewallPublicIP"
+    },
+    "nicPrefix": {
+      "value": "webnic"
+    },
+    "vmPrefix": {
+      "value": "w"
+    }
+  }
+}
