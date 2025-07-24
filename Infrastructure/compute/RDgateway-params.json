@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "value": "BastionVM"
+    },
+    "location": {
+      "value": "eastus"
+    },
+    "vnetName": {
+      "value": "EastUS-VNet"
+    },
+    "subnetName": {
+      "value": "Bastion-subnet"
+    },
+    "adminUsername": {
+      "value": "azureuser"
+    },
+    "adminPassword": {
+      "value": "Welcome123!"
+    },
+    "publicIpName": {
+      "value": "BastionPublicIP"
+    },
+    "nsgName": {
+      "value": "BastionNSG"
+    }
+  }
+}
