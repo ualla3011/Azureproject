@@ -21,16 +21,16 @@
       "value": "ws-subnet"
     },
     "storageAccountEastUS": {
-      "value": "mystorageeastus206" 
+      "value": "varshieastus206" 
     },
     "storageAccountEastUS2": {
-      "value": "mystorageeastus2206" 
+      "value": "varshieastus2206" 
     },
     "privateEndpointEastUSName": {
-      "value": "pe-eastus-storageeastus2"
+      "value": "pe-eastus-eastus2"
     },
     "privateEndpointEastUS2Name": {
-      "value": "pe-eastus2-storageeastus"
+      "value": "pe-eastus2-eastus"
     },
     "nsgEastUSName": {
       "value": "nsg-eastus-vmsubnet"
