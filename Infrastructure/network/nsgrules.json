@@ -1,0 +1,115 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "firewallPolicyName": {
+      "type": "string",
+      "defaultValue": "myFirewallPolicy"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "eastus2"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/firewallPolicies",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('firewallPolicyName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "threatIntelMode": "Alert"
+      }
+    },
+    {
+      "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/DenySocialMediaGroup', parameters('firewallPolicyName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicyName'))]"
+      ],
+      "properties": {
+        "priority": 100,
+        "ruleCollections": [
+          {
+            "name": "DenySocialMediaRules",
+            "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+            "priority": 200,
+            "action": {
+              "type": "Deny"
+            },
+            "rules": [
+              {
+                "name": "DenyFacebook",
+                "ruleType": "ApplicationRule",
+                "description": "Block Facebook traffic",
+                "sourceAddresses": [
+                  "*"
+                ],
+                "protocols": [
+                  {
+                    "protocolType": "Http",
+                    "port": 80
+                  },
+                  {
+                    "protocolType": "Https",
+                    "port": 443
+                  }
+                ],
+                "targetFqdns": [
+                  "www.facebook.com",
+                  "*.facebook.com"
+                ]
+              },
+              {
+                "name": "DenyTwitter",
+                "ruleType": "ApplicationRule",
+                "description": "Block Twitter traffic",
+                "sourceAddresses": [
+                  "*"
+                ],
+                "protocols": [
+                  {
+                    "protocolType": "Http",
+                    "port": 80
+                  },
+                  {
+                    "protocolType": "Https",
+                    "port": 443
+                  }
+                ],
+                "targetFqdns": [
+                  "www.twitter.com",
+                  "*.twitter.com"
+                ]
+              },
+              {
+                "name": "DenyYouTube",
+                "ruleType": "ApplicationRule",
+                "description": "Block YouTube traffic",
+                "sourceAddresses": [
+                  "*"
+                ],
+                "protocols": [
+                  {
+                    "protocolType": "Http",
+                    "port": 80
+                  },
+                  {
+                    "protocolType": "Https",
+                    "port": 443
+                  }
+                ],
+                "targetFqdns": [
+                  "www.youtube.com",
+                  "*.youtube.com",
+                  "youtube.com"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
