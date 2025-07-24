@@ -16,9 +16,12 @@
     "eastUSShareName": {
       "type": "string",
       "defaultValue": "webshare"
-    },
+    }
+    
   },
-  "variables": {},
+  "variables": {
+    
+  },
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
@@ -34,7 +37,6 @@
         "supportsHttpsTrafficOnly": true
       }
     },
-    
     {
       "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
       "apiVersion": "2021-09-01",
@@ -42,13 +44,16 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', parameters('eastUSStorageName'))]"
       ],
-      "properties": {}
-    },
-   ],
+      "properties": {
+        
+      }
+    }
+    
+  ],
   "outputs": {
     "eastUSStorageURL": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('eastUSStorageName'))).primaryEndpoints.file]"
-    },
-  }
+    }
+    }
 }
