@@ -1,0 +1,180 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "locationEastUS": {
+            "type": "string",
+            "defaultValue": "eastus"
+        },
+        "locationEastUS2": {
+            "type": "string",
+            "defaultValue": "eastus2"
+        },
+        "vnetEastUS": {
+            "type": "string"
+        },
+        "vnetEastUS2": {
+            "type": "string"
+        },
+        "availabilitySetName": {
+            "type": "string"
+        },
+        "vmName1": {
+            "type": "string"
+        },
+        "vmName2": {
+            "type": "string"
+        },
+        "vmName3": {
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "string"
+        },
+        "adminPassword": {
+            "type": "securestring"
+        },
+        "firewallName": {
+            "type": "string"
+        },
+        "firewallSubnetName": {
+            "type": "string"
+        },
+        "publicIpName": {
+            "type": "string"
+        },
+        "nicPrefix": {
+            "type": "string"
+        },
+        "vmPrefix": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "vnet-deployment",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproj/refs/heads/main/infra/network/vnet_peering.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "locationEastUS": {
+                        "value": "[parameters('locationEastUS')]"
+                    },
+                    "locationEastUS2": {
+                        "value": "[parameters('locationEastUS2')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "eastusvm-deployment",
+            "dependsOn": [
+                "vnet-deployment"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproj/refs/heads/main/infra/compute/eastusvm.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "locationEastUS": {
+                        "value": "[parameters('locationEastUS')]"
+                    },
+                    "availabilitySetName": {
+                        "value": "[parameters('availabilitySetName')]"
+                    },
+                    "vmPrefix": {
+                        "value": "[parameters('vmPrefix')]"
+                    },
+                    "nicPrefix": {
+                        "value": "[parameters('nicPrefix')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "vnetEastUS": {
+                        "value": "[parameters('vnetEastUS')]"
+                    },
+                    "subnetName": {
+                        "value": "web-subnet"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "eastus2vm-deployment",
+            "dependsOn": [
+                "vnet-deployment"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproj/refs/heads/main/infra/compute/eastus2vm.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "locationEastUS2": {
+                        "value": "[parameters('locationEastUS2')]"
+                    },
+                    "vmName3": {
+                        "value": "[parameters('vmName3')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "vnetEastUS2": {
+                        "value": "[parameters('vnetEastUS2')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "nsg-deployment",
+            "dependsOn": [
+                "eastus2vm-deployment"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproj/refs/heads/main/infra/network/nsg.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "locationEastUS2": {
+                        "value": "[parameters('locationEastUS2')]"
+                    },
+                    "firewallName": {
+                        "value": "[parameters('firewallName')]"
+                    },
+                    "firewallSubnetName": {
+                        "value": "[parameters('firewallSubnetName')]"
+                    },
+                    "publicIpName": {
+                        "value": "[parameters('publicIpName')]"
+                    },
+                    "vnetName": {
+                        "value": "[parameters('vnetEastUS2')]"
+                    }
+                }
+            }
+        }
+    ]
+}
