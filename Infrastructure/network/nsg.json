@@ -1,0 +1,80 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "locationEastUS2": {
+      "type": "string"
+    },
+    "firewallName": {
+      "type": "string",
+      "defaultValue": "myAzureFirewall"
+    },
+    "vnetName": {
+      "type": "string",
+      "defaultValue": "EastUS2-VNet"
+    },
+    "firewallSubnetName": {
+      "type": "string",
+      "defaultValue": "AzureFirewallSubnet"
+    },
+    "publicIpName": {
+      "type": "string",
+      "defaultValue": "firewallPublicIP"
+    }
+  },
+  "variables": {
+    "firewallPublicIpId": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName'))]",
+    "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('publicIpName')]",
+      "location": "[parameters('locationEastUS2')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "idleTimeoutInMinutes": 4
+      }
+    },
+    {
+      "type": "Microsoft.Network/azureFirewalls",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('firewallName')]",
+      "location": "[parameters('locationEastUS2')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName'))]"
+      ],
+      "properties": {
+        "sku": {
+          "name": "AZFW_VNet",
+          "tier": "Standard"
+        },
+        "ipConfigurations": [
+          {
+            "name": "azureFirewallIpConfig",
+            "properties": {
+              "subnet": {
+                "id": "[concat(variables('vnetId'), '/subnets/', parameters('firewallSubnetName'))]"
+              },
+              "publicIPAddress": {
+                "id": "[variables('firewallPublicIpId')]"
+              }
+            }
+          }
+        ],
+        "threatIntelMode": "Alert"
+      }
+    }
+    
+  ],
+  "outputs": {
+    "firewallPublicIp": {
+      "type": "string",
+      "value": "[reference(variables('firewallPublicIpId')).ipAddress]"
+    }
+  }
+}
