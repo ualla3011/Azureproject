@@ -3,10 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "eastUS2StorageName": {
-      "value": "mystorageeastus2206"   
+      "value": "varshieastus2206"   
     },
     "eastUS2ShareName": {
-      "value": "ws11share" 
+      "value": "rishiusshare" 
     },
     }
 }
