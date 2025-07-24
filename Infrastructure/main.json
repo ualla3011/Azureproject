@@ -58,7 +58,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproj/refs/heads/main/infra/network/vnet_peering.json",
+                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproject/refs/heads/main/Infrastructure/network/vnet_peering.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -81,7 +81,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproj/refs/heads/main/infra/compute/eastusvm.json",
+                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproject/refs/heads/main/Infrastructure/compute/eastusvm.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -122,7 +122,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproj/refs/heads/main/infra/compute/eastus2vm.json",
+                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproject/refs/heads/main/Infrastructure/compute/eastus2vm.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -154,7 +154,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproj/refs/heads/main/infra/network/nsg.json",
+                    "uri": "https://raw.githubusercontent.com/ualla3011/Azureproject/refs/heads/main/Infrastructure/network/nsg.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
