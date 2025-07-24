@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "locationEastUS": {
+      "value": "eastus"
+    },
+    "locationEastUS2": {
+      "value": "eastus2"
+    },
+    "eastUSVnetName": {
+      "value": "EastUS-VNet"
+    },
+    "eastUSSubnetName": {
+      "value": "web-subnet"
+    },
+    "eastUS2VnetName": {
+      "value": "EastUS2-VNet"
+    },
+    "eastUS2SubnetName": {
+      "value": "ws-subnet"
+    },
+    "storageAccountEastUS": {
+      "value": "mystorageeastus206" 
+    },
+    "storageAccountEastUS2": {
+      "value": "mystorageeastus2206" 
+    },
+    "privateEndpointEastUSName": {
+      "value": "pe-eastus-storageeastus2"
+    },
+    "privateEndpointEastUS2Name": {
+      "value": "pe-eastus2-storageeastus"
+    },
+    "nsgEastUSName": {
+      "value": "nsg-eastus-vmsubnet"
+    },
+    "nsgEastUS2Name": {
+      "value": "nsg-eastus2-vmsubnet"
+    }
+  }
+}
