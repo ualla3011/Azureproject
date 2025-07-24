@@ -12,7 +12,7 @@
       "value": "EastUS-VNet"
     },
     "subnetName": {
-      "value": "Bastion-subnet"
+      "value": "rdGateway-subnet"
     },
     "adminUsername": {
       "value": "azureuser"
@@ -21,10 +21,10 @@
       "value": "Welcome123!"
     },
     "publicIpName": {
-      "value": "BastionPublicIP"
+      "value": "rdGatewayPublicIP"
     },
     "nsgName": {
-      "value": "BastionNSG"
+      "value": "rdGatewayNSG"
     }
   }
 }
