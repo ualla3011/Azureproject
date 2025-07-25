@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "locationEastUS": {
+      "type": "string",
+      "defaultValue": "eastus"
+    },
+    "locationEastUS2": {
+      "type": "string",
+      "defaultValue": "eastus2"
+    },
+    "eastUS2StorageName": {
+      "type": "string"
+    },
+    "eastUS2ShareName": {
+      "type": "string",
+      "defaultValue": "ws11share"
+    }
+    
+  },
+  "variables": {
+    
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('eastUS2StorageName')]",
+      "location": "[parameters('locationEastUS2')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "supportsHttpsTrafficOnly": true
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2021-09-01",
+      "name": "[format('{0}/default/{1}', parameters('eastUS2StorageName'), parameters('eastUS2ShareName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('eastUS2StorageName'))]"
+      ],
+      "properties": {
+        
+      }
+    }
+    
+  ],
+  "outputs": {
+    "eastUS2StorageURL": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('eastUS2StorageName'))).primaryEndpoints.file]"
+    }
+    }
+}
